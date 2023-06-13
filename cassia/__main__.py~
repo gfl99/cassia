@@ -197,7 +197,7 @@ def import_data(logfile):
         elif line == "":
             pass
         else:
-            raise ValueError(f"While importing data, the following line could not be parsed:\n{line} @ line #{i+1}")
+            raise ValueError(f"While importing data, the following line could not be parsed:\n{line} @ line #{i}")
 
     # Return data w/durations
     end_time = time.time()
