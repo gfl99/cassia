@@ -1,0 +1,25 @@
+
+ingest log
+show recent entries
+add entry
+ - append to logfile and to csv
+remove entry
+ - remove from logfile and csv
+vector search
+
+what is our vector db?
+log
+ - full_time  YYYY-MM-DDTHH:MM:SS
+ - cat
+ - subcat
+ - description
+ vector csv 1-1 w/ the logfile
+
+
+ file structure
+ - reports                                             analysis.py
+ - add / delete an entry / search for best matches
+ - maintain and search the vector db
+ - console (everything w/ term color etc.)             __main__.py
+
+

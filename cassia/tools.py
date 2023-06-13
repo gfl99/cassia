@@ -1,4 +1,4 @@
-import pandas as pd
+import sys, tty, termios
 
 # Styling list
 MAGENTA, GREEN, BOLD, RED, DEFAULT_COLOR, YELLOW = "\033[95m", "\033[32m", "\33[0;1m", "\033[31m", "\033[0m", "\033[93m"
@@ -13,6 +13,20 @@ def add_durations(data):
     #    data.Duration = data.duration.to_dict()
     # Return data
     return data[1:-1]
+
+# read a character from the user without
+# them having to press enter
+def getch():
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        #tty.setraw(sys.stdin.fileno())
+        tty.setcbreak(sys.stdin.fileno())
+        ch = sys.stdin.read(1)
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    return ch
+
 
 def prompt_hotkeys(name, option_list, allow_new=True,
                    max_hotkeys=55, allow_blanks=False, character_limit=15, full_entry=False):
