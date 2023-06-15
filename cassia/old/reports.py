@@ -1,4 +1,4 @@
-import cassia.analysis as analysis
+import cassia.old.analysis as analysis
 import time
 import cassia.tools as tools
 import datetime as dt

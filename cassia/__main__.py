@@ -1,9 +1,7 @@
 import datetime as dt
-import time
-import pandas as pd
-from fuzzywuzzy import fuzz
-from cassia import readwrite, analysis, config, tools
-from cassia.tools import colors, YELLOW, GREEN, RED, DEFAULT_COLOR, BOLD, MAGENTA
+from cassia import readwrite, config, tools
+from cassia.old import analysis
+from cassia.tools import YELLOW, GREEN, DEFAULT_COLOR, BOLD, MAGENTA
 
 def check_datetime_validity(string, format):
     try:

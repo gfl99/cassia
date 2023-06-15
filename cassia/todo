@@ -17,9 +17,10 @@ log
 
 
  file structure
- - reports                                             analysis.py
- - add / delete an entry / search for best matches
- - maintain and search the vector db
- - console (everything w/ term color etc.)             __main__.py
+ - reports                                             analysis.py / reports.py
+ - add / delete an entry / search for best matches     entries.py
+ - maintain and search the vector db                   embedding.py
+ - console (everything w/ term color etc.)             __main__.py / tools.py
+ - configuration, file pointing                        config.py
 
 

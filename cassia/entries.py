@@ -58,7 +58,7 @@ def append_entry( entry: Entry):
     # Write to txt file
     time = entry.time.strftime("%H:%M")
     with open(logfile, "a") as f:
-        f.write(f"{time}\t{entry.category}\t{entry.subcategory}\t{entry.description}" + "\n"
+        f.write(f"{time}\t{entry.category}\t{entry.subcategory}\t{entry.description}" + "\n")
 
 def fetch_todays_entries(max_entries = 20) -> List[Entry]:
     today = datetime.date.today()
