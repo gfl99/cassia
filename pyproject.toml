@@ -10,7 +10,13 @@ python = "^3.11"
 fuzzywuzzy = "^0.18.0"
 pandas = "^2.0.2"
 matplotlib = "^3.7.1"
+sqlalchemy = "^2.0.16"
+sqlite-web = "^0.4.1"
 
+
+[tool.poetry.group.dev.dependencies]
+sqlite-web = "^0.4.1"
+datasette = "^0.64.3"
 
 [build-system]
 requires = ["poetry-core"]

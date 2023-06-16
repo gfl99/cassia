@@ -1,5 +1,5 @@
 import datetime as dt
-from cassia import readwrite, config, tools
+from cassia import entries, config, tools
 from cassia.old import analysis
 from cassia.tools import YELLOW, GREEN, DEFAULT_COLOR, BOLD, MAGENTA
 
@@ -13,12 +13,12 @@ def console(logfile):
     # Greet User
     print("Hello!")
     while True:
-        print_recent_entries()  # TODO
+        # print_recent_entries()  # TODO
         # Print all entries from current day
         print("----------------------------------------")
         # Prompt input
         option = input(
-            f"\n{YELLOW}Options: New Entry [%H%M + description], [R]eports, [D]elete last line, [L]ist cat/sub/desc,  e[X]it: {DEFAULT_COLOR}")
+            f"\n{YELLOW}Options: New Entry [%H%M + description], [R]eports, [D]elete last, [L]ist,  e[X]it: {DEFAULT_COLOR}")
         # Input parsing for exit
         if option.upper() in ['L', 'LIST']:
             field = tools.prompt_hotkeys("field", ['category', 'subcategory', 'description'], allow_new=False)
