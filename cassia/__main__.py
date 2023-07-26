@@ -1,97 +1,39 @@
 import datetime as dt
-from cassia import entries, config, tools
-from cassia.old import analysis
-from cassia.tools import YELLOW, GREEN, DEFAULT_COLOR, BOLD, MAGENTA
 
-def check_datetime_validity(string, format):
-    try:
-        return dt.datetime.strptime(string, format)
-    except ValueError:
-        return False
+from cassia import entries, config, lexing
+from cassia import actions
 
-def console(logfile):
-    # Greet User
-    print("Hello!")
-    while True:
-        # print_recent_entries()  # TODO
-        # Print all entries from current day
-        print("----------------------------------------")
-        # Prompt input
-        option = input(
-            f"\n{YELLOW}Options: New Entry [%H%M + description], [R]eports, [D]elete last, [L]ist,  e[X]it: {DEFAULT_COLOR}")
-        # Input parsing for exit
-        if option.upper() in ['L', 'LIST']:
-            field = tools.prompt_hotkeys("field", ['category', 'subcategory', 'description'], allow_new=False)
-            print(analysis.list_unique_values(df, field))
-        elif option.upper() in ['X', 'EXIT', 'QUIT']:
-            break
-        elif option.upper() in ['D', 'DELETE']:
-            working_datetime = readwrite.delete_last_entry()
-        elif option.upper() in ['T', 'TEST']:
-            pass
-        elif option.upper() in ['R', 'REPORTS']:
-            analysis.analysis_menu()
-        # ADDING A NEW ENTRY
-        elif len(option)>3 and ((time := check_datetime_validity(option[:5], "%H:%M")) or (time := check_datetime_validity(option[:4], "%H%M"))):
-            # If working datetime is past the entered time, iterate the day
-            if working_datetime.time > time:
-                working_datetime += dt.timedelta(days=1)
-            working_datetime = working_datetime.replace(hour=time.hour, minute=time.minute)
-
-            with open(config.training_file, 'a') as f:
-                f.write("Input=" + str(option) + "\n")
-            entry = get_entry_from_user(working_datetime, option=option)  # TODO
-            with open(config.training_file, 'a') as f:
-                f.write(str(entry) + "\n")
-
-            readwrite.append_entry(entry)
-            # Printing log
-        else:
-            print("Try again!")
-
-def print_recent_entries(df, working_datetime):
-    print("DAILY LOG:")
-    recent_entries = readwrite.fetch_todays_entries()
-    print(readwrite.Entry.header_str)
-    for entry in recent_entries:
-        print(entry)
-
-def get_entry_from_user(working_datetime, option):
-
-    # user provides option str
-    # (parse time handled in console)
-    # search for closest match in db
-    # prompt 5 closest matches (of full entry: cat/sub/desc)
-    # user selects closest match or presses 'n' to write from scratch
-    match_list = closest_match([option], df)  # return a few similar entries
-    best_entry = match_list[0] # best entry
-    while True:
-        print(
-            f"{BOLD}{MAGENTA}Category: {GREEN}{category}, {MAGENTA}Subcategory: {GREEN}{subcategory}, "
-            f"{MAGENTA}Description: {GREEN}{description}{DEFAULT_COLOR}"
-        )
-        for match, char in zip(match_list[1:], 'qwertyuiop'):
-            print(f"{char}) {YELLOW}{match}{DEFAULT_COLOR}")
-        print("Use 'c', 's', and 'd' to change category/subcategory/description, or press ENTER to write to log")
-        chosen_char = tools.getch()  # get a character from the user
-        fields = [{'name': 'category', 'hotkeys': ['C', '1']},
-                  {'name': 'subcategory', 'hotkeys': ['S', '2']},
-                  {'name': 'description', 'hotkeys': ['D', '3']}]
-        if chosen_char == "\n":
-            break
-        recent_entries = readwrite.fetch_todays_entries(max_entries = 1000)
-        for field in fields:
-            if chosen_char.upper() in field['hotkeys']:
-                # prompt from hotkeys
-                tools.prompt_hotkeys(field['name'], )
-                # set entry's field
-    readwrite.append_to_txt("training_data.txt", "Output=" + str(category) + "-" + str(subcategory) + "-" + str(description) + "\n")
+from subprocess import run
 
 
-def is_iso_date(string):
-    return len(string) >= 10 and all([string[i].isdigit() for i in (0,1,2,3,5,6,8,9)])
+import questionary
 
-def is_military_time(string):
-    return len(string) >= 5 and all([string[i].isdigit() for i in (0,1,3,4)])
+# TODO print n
+# TODO print last entry datetime (George needs to see most recent date)
+# TODO Edit the log in vim
 
-console("cassia/cassia_diary.txt")
+# Greet User
+print("Welcome to CASSIA!\n")
+# print recent entries
+actions.print_recent()
+while True:
+    # Prompt input
+    option = questionary.text("New Entry [%H%M + description], [R]eports, [D]elete last, [L]ist, [P]rint, e[X]it:",
+                              lexer=lexing.SelectActionLexer(), style=lexing.select_action_style).ask()
+    # Input parsing for exit
+    if option.upper() in ['L', 'LIST']:
+        field = questionary.select("List:" , choices=['categories', 'subcategories', 'descriptions']).ask()
+        actions.list(field)
+    elif option.upper() in ['X', 'EXIT', 'QUIT', 'Q']:
+        break
+    elif option.upper() in ['D', 'DELETE']:
+        actions.delete()
+    elif option.upper() in ['R', 'REPORTS']:
+        actions.reports()
+    elif option.upper() in ['P', 'PRINT']:
+        actions.print_recent()
+    elif actions.parse_option_time(option):
+        actions.create(option)
+    else:
+        run(['vim','/tmp/cassia.log'])
+        print("Try again!")

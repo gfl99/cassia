@@ -1,5 +1,5 @@
 import pandas as pd
-from cassia.tools import prompt_hotkeys
+from cassia.old.tools import prompt_hotkeys
 from cassia.old import reports
 import matplotlib.pyplot as plt
 

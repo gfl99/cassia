@@ -12,6 +12,8 @@ pandas = "^2.0.2"
 matplotlib = "^3.7.1"
 sqlalchemy = "^2.0.16"
 sqlite-web = "^0.4.1"
+prompt-toolkit = "^3.0.38"
+questionary = "^1.10.0"
 
 
 [tool.poetry.group.dev.dependencies]
