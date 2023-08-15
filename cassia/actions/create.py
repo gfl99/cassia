@@ -38,6 +38,7 @@ def modify_entry(entry):
         if action in ('category', 'subcategory', 'description'):
             questionary.print('Updated entry...       ', end='')
             questionary.print(f'{entry}', style='orange bold')
+    entry.serialized_embedding = entry.get_embedding().tobytes()
 
 def create(input):
 
@@ -50,7 +51,7 @@ def create(input):
         working_datetime += dt.timedelta(days=1)
     working_datetime = working_datetime.replace(hour=time.hour, minute=time.minute)
     # search similar entries
-    match_list = entries.get_templates(input)
+    match_list = entries.get_templates(input[5:])
     best_entry = match_list[0]
     # prompt the closest matches
     choices = [questionary.Choice(title=str(entry), value=entry) for entry in match_list]

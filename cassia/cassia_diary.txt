@@ -1,5 +1,3 @@
-// vim: set tabstop=20:
-TIME	CATEGORY	SUBCATEGORY	DESCRIPTION
 2022-12-01
 23:00	Rest	Sleep
 17:25	Housework	Kitchenwork	Dishes

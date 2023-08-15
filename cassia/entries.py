@@ -1,8 +1,11 @@
+import numpy as np
+from tqdm import tqdm
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, LargeBinary
 from sqlalchemy.orm import sessionmaker, declarative_base
 from datetime import datetime
 
 from cassia.config import db_path
+from cassia import embedding
 
 Base = declarative_base()
 
@@ -15,7 +18,14 @@ class Entry(Base):  # inherits from Base
     category = Column(String, nullable=False)
     subcategory = Column(String, nullable=False)
     description = Column(String, nullable=False)
-    embedding = Column(LargeBinary)
+    serialized_embedding = Column(LargeBinary)
+
+    @property
+    def embedding(self):
+        return np.frombuffer(self.serialized_embedding, dtype=np.float32)
+
+    def get_embedding(self):
+        return embedding.embed(str(self))
 
     def copy(self):
         return Entry(category=self.category, subcategory=self.subcategory, description=self.description)
@@ -36,7 +46,6 @@ class Entry(Base):  # inherits from Base
     header_str = "   " + "   ".join([f"{header:<{width}}" for header, width in zip(headers, column_widths)])
 
 
-
 engine = create_engine(f'sqlite:///{db_path}')
 
 # to ensure that the database schema matches the model
@@ -44,14 +53,38 @@ Base.metadata.create_all(bind=engine)
 
 Session = sessionmaker(bind=engine)  # factory for creating sessions
 
+
 def get_templates(input: str):
     # return the five most recent entries,
+    input_embedding = embedding.embed(input)
     with Session() as session:
-        return session.query(Entry).order_by(Entry.date.desc()).limit(5).all()
+        entries = session.query(Entry).distinct().all()
+        entries.sort(key=lambda entry: entry.description)
+        distinct_entries = []
+        last_description = ""
+        for entry in entries:
+            if entry.description != last_description:
+                distinct_entries.append(entry)
+                last_description = entry.description
+        distinct_entries.sort(key=lambda entry: entry.embedding @ input_embedding)
+        best_entries = distinct_entries[:-6:-1]
+        my_list = [entry.embedding @ input_embedding for entry in best_entries]
+        print(my_list)
+        return best_entries
+
 
 def list_field(field, limit=-1, category=None):
     if not hasattr(Entry, field):
         raise ValueError(f"Entry has no attribute '{field}'")
-    filter = Entry.category == category if category else True
+    filter = (Entry.category == category) if category else True
     with Session() as session:
-        return [getattr(e, field) for e in session.query(getattr(Entry, field)).filter(filter).distinct().order_by(Entry.date.desc()).limit(limit).all()]
+        entries = session.query(getattr(Entry, field)).filter(filter).distinct().order_by(Entry.date.desc()).limit(limit).all()
+        return [getattr(e, field) for e in entries]
+
+
+def embed_all():
+    with Session() as session:
+        entries = session.query(Entry).all()
+        for entry in tqdm(entries):
+            entry.serialized_embedding = entry.get_embedding().tobytes()
+        session.commit()

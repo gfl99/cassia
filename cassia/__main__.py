@@ -8,9 +8,11 @@ from subprocess import run
 
 import questionary
 
-# TODO print n
+# Our current problem is that in get_templates both embeddings are bytes objects, not vector objects
+# TODO print n recent entries
 # TODO print last entry datetime (George needs to see most recent date)
 # TODO Edit the log in vim
+# TODO Semantic Search
 
 # Greet User
 print("Welcome to CASSIA!\n")
@@ -18,7 +20,7 @@ print("Welcome to CASSIA!\n")
 actions.print_recent()
 while True:
     # Prompt input
-    option = questionary.text("New Entry [%H%M + description], [R]eports, [D]elete last, [L]ist, [P]rint, e[X]it:",
+    option = questionary.text("New Entry [%H%M + description], [R]eports, [D]elete last, [L]ist, [E]ntries, e[X]it:",
                               lexer=lexing.SelectActionLexer(), style=lexing.select_action_style).ask()
     # Input parsing for exit
     if option.upper() in ['L', 'LIST']:
@@ -30,7 +32,7 @@ while True:
         actions.delete()
     elif option.upper() in ['R', 'REPORTS']:
         actions.reports()
-    elif option.upper() in ['P', 'PRINT']:
+    elif option.upper() in ['E', 'ENTRIES']:
         actions.print_recent()
     elif actions.parse_option_time(option):
         actions.create(option)
