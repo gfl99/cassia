@@ -2,14 +2,25 @@
 name = "cassia"
 version = "0.1.0"
 description = ""
-authors = ["Oscar Laird <olaird25@gmail.com>"]
+authors = ["Oscar 'George' Laird <olaird25@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-fuzzywuzzy = "^0.18.0"
+python = "^3.10"
 pandas = "^2.0.2"
 matplotlib = "^3.7.1"
+sqlalchemy = "^2.0.16"
+sqlite-web = "^0.4.1"
+prompt-toolkit = "^3.0.38"
+questionary = "^1.10.0"
+fire = "^0.5.0"
+torch = {url = "https://download.pytorch.org/whl/cpu/torch-2.0.1%2Bcpu-cp310-cp310-linux_x86_64.whl"}
+sentence-transformers = "^2.2.2"
+
+
+[tool.poetry.group.dev.dependencies]
+sqlite-web = "^0.4.1"
+datasette = "^0.64.3"
 
 
 [build-system]

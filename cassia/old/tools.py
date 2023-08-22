@@ -4,6 +4,7 @@ import sys, tty, termios
 MAGENTA, GREEN, BOLD, RED, DEFAULT_COLOR, YELLOW = "\033[95m", "\033[32m", "\33[0;1m", "\033[31m", "\033[0m", "\033[93m"
 colors = [MAGENTA, GREEN, BOLD, RED, DEFAULT_COLOR, YELLOW]
 
+
 # Calculating durations
 def add_durations(data):
     data['duration'] = ""
