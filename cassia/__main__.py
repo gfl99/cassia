@@ -34,6 +34,8 @@ while True:
         actions.reports()
     elif option.upper() in ['E', 'ENTRIES']:
         actions.print_recent()
+    elif option.upper() in ['I', 'INJECT']:
+        actions.inject()
     elif actions.parse_option_time(option):
         actions.create(option)
     else:
