@@ -1,0 +1,15 @@
+# Bytecode files
+*.pyc
+__pycache__/
+
+# Poetry files
+poetry.lock
+
+# PyCharm files
+.idea/
+
+# Editor swap files
+*.swp
+*.swo
+*~
+.*.un~

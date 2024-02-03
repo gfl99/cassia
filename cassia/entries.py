@@ -31,9 +31,11 @@ class Entry(Base):  # inherits from Base
         return Entry(category=self.category, subcategory=self.subcategory, description=self.description)
 
     def __str__(self):
-        return (f"{self.category:<{Entry.column_widths[1]}}   "
-                f"{self.subcategory:<{Entry.column_widths[2]}}   "
-                f"{self.description:<{Entry.column_widths[3]}}")
+        s = ''
+        for i,attr in enumerate(("category", "subcategory", "description")):
+            text = getattr(self, attr) or 'No '+attr
+            s += f"{text:<{Entry.column_widths[i]}}"
+        return s
 
     def row_str(self):
         time_str = self.date.strftime("%Y-%m-%d    %H:%M")
@@ -68,8 +70,6 @@ def get_templates(input: str):
                 last_description = entry.description
         distinct_entries.sort(key=lambda entry: entry.embedding @ input_embedding)
         best_entries = distinct_entries[:-6:-1]
-        my_list = [entry.embedding @ input_embedding for entry in best_entries]
-        print(my_list)
         return best_entries
 
 
